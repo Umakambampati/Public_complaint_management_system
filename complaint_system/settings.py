@@ -74,13 +74,9 @@ WSGI_APPLICATION = 'complaint_system.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-       'ENGINE': 'mysql.connector.django',
-        'NAME': 'complaints_db',
-        'USER': 'root',
-        'PASSWORD': 'Uma@1234567890',
-        'HOST': 'localhost',
-        'PORT': '3306',
+      'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
     }
 }
 
