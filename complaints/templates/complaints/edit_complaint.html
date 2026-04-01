@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Edit Complaint</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .bg-image {
+            background: url('https://thumbs.dreamstime.com/b/skyscrapers-hyderabad-india-august-fifth-largest-contributor-city-to-india-s-gdp-us-billion-august-india-48811585.jpg') 
+                        no-repeat center center/cover;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -2;
+        }
+
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        #card{
+            height:auto;
+            width:550px;
+            background-color:white;
+            padding:20px;
+             margin-top:30px;
+             border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+ 
+        }
+        #heading{
+            text-align:center;
+            margin-top:10px;
+        }
+        #form{
+             margin-top:30px;
+        }
+    </style>
+    </head>
+    <body>
+    <div class="bg-image"></div>
+    <div class="overlay"></div>
+      <nav style="background-color: #003366; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; ">
+    
+    <h4 style="color:white; margin:0;">Public Complaint Management System</h4>
+
+    <div>
+    <a href="{% url 'home' %}" style="color:white; margin-right:20px;">Home</a>
+    <a href="{% url 'add_complaint' %}" style="color:white; margin-right:20px;">Add Complaint</a>
+    <a href="{% url 'view_complaint' %}" style="color:white; margin-right:20px;">View Complaints</a>
+    <a href="{% url 'login_view' %}" style="color:white; margin-right:20px;">Logout</a>
+
+    </div>
+
+</nav>
+     <div class="d-flex justify-content-center align-items-center">
+            <div id="card">
+                 <h2 id="heading">Edit Complaint</h2>
+                 <div id="form">
+        <form method="POST">
+    {% csrf_token %}
+
+    <label>Title:</label><br>
+    <input type="text" name="title" class="form-control mb-3" placeholder="Enter complaint title" value="{{ data.title }}" required>
+
+    <label>Description:</label><br>
+    <textarea name="description" class="form-control mb-3" value="{{data.description}}"></textarea>
+
+    <label>Category:</label><br>
+    <input type="text" name="category" class="form-control mb-3" value="{{data.category}}" required>
+
+    <label>Location:</label><br>
+    <input type="text" name="location" class="form-control mb-3" value="{{data.location}}" placeholder="Enter Location" required>
+
+   <button type="submit" class="btn btn-success btn-custom w-100 mt-2">Update</button>
+</form>
+</div>
+</div>
+</div>
+    </body>
+</html>
