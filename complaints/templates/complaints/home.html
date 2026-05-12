@@ -1,136 +1,242 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
+{% extends 'complaints/base.html' %}
+{% block title %}Home — Public Complaint Management{% endblock %}
 
-        .bg-image {
-            background: url('https://thumbs.dreamstime.com/b/skyscrapers-hyderabad-india-august-fifth-largest-contributor-city-to-india-s-gdp-us-billion-august-india-48811585.jpg') 
-                        no-repeat center center/cover;
-            width: 100%;
-            height: 60vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -2;
-        }
+{% block extra_styles %}
+<style>
+    .hero {
+        padding: 5rem 1.5rem 4rem;
+        text-align: center;
+        color: #fff;
+    }
 
-        .overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            width: 100%;
-            height: 60vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
+    .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #93c5fd;
+        margin-bottom: 1.25rem;
+    }
 
-        .home-content {
-            height: 60vh;
-            color: white;
-        }
+    .hero h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+        letter-spacing: -0.03em;
+    }
 
-        .btn-custom {
-            min-width: 180px;
-            font-size: 1.1rem;
-        }
+    .hero h1 span { color: #60a5fa; }
 
-        .btn-custom:hover {
-            transform: scale(1.05);
-            transition: 0.3s;
-        }
+    .hero p {
+        color: rgba(255,255,255,0.72);
+        font-size: 1.05rem;
+        max-width: 480px;
+        margin: 0 auto 2rem;
+        line-height: 1.65;
+    }
 
-        nav a:hover {
-            color: #003366;
-        }
-    </style>
-</head>
+    .hero-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 
-<body>
-    <!-- Background and overlay -->
-    <div class="bg-image"></div>
-    <div class="overlay"></div>
+    .hero-actions a {
+        padding: 0.75rem 1.75rem;
+        border-radius: 10px;
+        font-family: 'Syne', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
 
-    <!-- Navigation bar -->
-    <nav style="background-color: #003366; padding:15px 30px; display:flex; justify-content:space-between; align-items:center;">
-        <h4 style="color:white; margin:0;">Public Complaint Management System</h4>
-        <div>
-            <a href="{% url 'home' %}" style="color:white; margin-right:20px;">Home</a>
-            {% if user.is_authenticated %}
-                <a href="{% url 'add_complaint' %}" style="color:white; margin-right:20px;">Add Complaint</a>
-                <a href="{% url 'view_complaint' %}" style="color:white; margin-right:20px;">View Complaints</a>
-                <a href="{% url 'logout' %}" style="color:white; margin-right:20px;">Logout</a>
-            {% else %}
-                <a href="{% url 'login_view' %}" style="color:white; margin-right:20px;">Login</a>
-                <a href="{% url 'register' %}" style="color:white; margin-right:20px;">Register</a>
-            {% endif %}
+    .btn-hero-primary {
+        background: var(--accent);
+        color: #fff;
+    }
+
+    .btn-hero-primary:hover { background: #1d4ed8; transform: translateY(-2px); color: #fff; }
+
+    .btn-hero-outline {
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        border: 1.5px solid rgba(255,255,255,0.25);
+    }
+
+    .btn-hero-outline:hover { background: rgba(255,255,255,0.2); color: #fff; transform: translateY(-2px); }
+
+    /* Stats bar */
+    .stats-bar {
+        background: rgba(255,255,255,0.06);
+        border-top: 1px solid rgba(255,255,255,0.12);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-num {
+        font-family: 'Syne', sans-serif;
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #60a5fa;
+        display: block;
+    }
+    .stat-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: rgba(255,255,255,0.5);
+    }
+
+    /* Recent complaints section */
+    .section {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 3rem 1.25rem 4rem;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .section-header h2 {
+        font-family: 'Syne', sans-serif;
+        font-weight: 700;
+        font-size: 1.35rem;
+        color: var(--navy);
+        margin: 0;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-muted);
+    }
+
+    .empty-state i { font-size: 2.5rem; margin-bottom: 0.75rem; display: block; color: #cbd5e1; }
+
+    .welcome-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(37,99,235,0.12);
+        color: #1d4ed8;
+        border-radius: 20px;
+        padding: 4px 14px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-bg">
+    <div class="hero">
+        {% if user.is_authenticated %}
+        <div class="welcome-chip">
+            <i class="bi bi-person-check-fill"></i> Logged in as {{ user.username }}
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <div class="d-flex flex-column justify-content-center align-items-center text-center home-content">
-        <div class="text-center mb-3">
-            {% if user.is_authenticated %}
-                <h2 class="text-white">Welcome, {{ user.username }}!</h2>
-            {% else %}
-                <h2 class="text-white">Welcome to the Public Complaint Portal</h2>
-            {% endif %}
+        <h1>Welcome back,<br><span>{{ user.username }}</span></h1>
+        {% else %}
+        <div class="hero-eyebrow">
+            <i class="bi bi-shield-check"></i> Hyderabad City Portal
         </div>
-        <p class="mb-4 fs-5">Help improve your city by reporting issues.</p>
-
-        <div class="d-flex gap-3">
+        <h1>Your Voice,<br><span>Our Priority</span></h1>
+        {% endif %}
+        <p>Report public issues, track their status, and help make your city better — all in one place.</p>
+        <div class="hero-actions">
             {% if user.is_authenticated %}
-                <a href="{% url 'add_complaint' %}" class="btn btn-success btn-custom">Report Complaint</a>
-                <a href="{% url 'view_complaint' %}" class="btn btn-primary btn-custom">View Complaints</a>
+            <a href="{% url 'add_complaint' %}" class="btn-hero-primary"><i class="bi bi-plus-lg"></i> Report an Issue</a>
+            <a href="{% url 'view_complaint' %}" class="btn-hero-outline"><i class="bi bi-list-ul"></i> View All Complaints</a>
             {% else %}
-                <a href="{% url 'login_view' %}" class="btn btn-success btn-custom">Report Complaint</a>
-                <a href="{% url 'login_view' %}" class="btn btn-primary btn-custom">View Complaints</a>
+            <a href="{% url 'login_view' %}" class="btn-hero-primary"><i class="bi bi-megaphone"></i> Report a Complaint</a>
+            <a href="{% url 'register' %}" class="btn-hero-outline"><i class="bi bi-person-plus"></i> Create Account</a>
             {% endif %}
         </div>
     </div>
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-num">{{ recent_complaints|length }}</span>
+            <span class="stat-label">Recent Complaints</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">24h</span>
+            <span class="stat-label">Avg Response Time</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-num">98%</span>
+            <span class="stat-label">Resolution Rate</span>
+        </div>
+    </div>
+</div>
 
-    <!-- Recent Complaints -->
-    <div class="container mt-4">
-        <h3 class="text-center mb-3 text-black">Recent Complaints</h3>
+<div class="section">
+    <div class="section-header">
+        <h2><i class="bi bi-clock-history" style="color:var(--accent);"></i> Recent Complaints</h2>
+        <a href="{% url 'view_complaint' %}" class="btn-ghost" style="font-size:0.82rem;">
+            View all <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
 
-        <table class="table table-light table-bordered text-center shadow-sm">
+    <div class="table-wrapper">
+        <table class="table-custom">
             <thead>
                 <tr>
-                    <th>Issue</th>
+                    <th>Issue Title</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 {% for complaint in recent_complaints %}
                 <tr>
-                    <td>{{ complaint.title }}</td>
+                    <td><strong>{{ complaint.title }}</strong></td>
                     <td>
                         {% if complaint.status|lower == "in progress" %}
-                            <span class="text-warning fw-bold">In Progress</span>
+                            <span class="badge-status badge-progress"><i class="bi bi-arrow-repeat"></i> In Progress</span>
                         {% elif complaint.status|lower == "submitted" %}
-                            <span class="text-primary fw-bold">Submitted</span>
+                            <span class="badge-status badge-submitted"><i class="bi bi-send"></i> Submitted</span>
                         {% elif complaint.status|lower == "resolved" %}
-                            <span class="text-success fw-bold">Resolved</span>
+                            <span class="badge-status badge-resolved"><i class="bi bi-check-circle"></i> Resolved</span>
+                        {% else %}
+                            <span class="badge-status badge-submitted">{{ complaint.status }}</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="2">No complaints submitted yet.</td>
+                    <td colspan="2">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p style="margin:0;">No complaints submitted yet. Be the first to report an issue!</p>
+                        </div>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-
-        <div class="text-center">
-            <a href="{% url 'view_complaint' %}" class="btn btn-primary">View All Complaints</a>
-        </div>
     </div>
-
-</body>
-</html>
+</div>
+{% endblock %}

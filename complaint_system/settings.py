@@ -73,11 +73,13 @@ WSGI_APPLICATION = 'complaint_system.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import dj_database_url
+
 DATABASES = {
-      'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",
-    }
+    'default': dj_database_url.config(
+        default='postgresql://neondb_owner:npg_uRlwhimL24Ya@ep-lively-recipe-aqx9g290.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require',
+        conn_max_age=600
+    )
 }
 
 
